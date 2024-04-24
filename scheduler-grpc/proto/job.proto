@@ -1,0 +1,16 @@
+syntax = "proto3";
+package scheduler_grpc.proto.job;
+//option go_package = ".";
+option go_package = "github.com/cicoyle/test-apps/scheduler-grpc/job;job";
+
+service JobService {
+  rpc WatchJobs (WatchJobsRequest) returns (WatchJobsResponse);
+}
+
+message WatchJobsRequest {
+  string data = 1;
+}
+
+message WatchJobsResponse {
+
+}
