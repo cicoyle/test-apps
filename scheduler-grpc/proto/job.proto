@@ -5,6 +5,7 @@ option go_package = "github.com/cicoyle/test-apps/scheduler-grpc/job;job";
 
 service JobService {
   rpc WatchJobs (WatchJobsRequest) returns (WatchJobsResponse);
+  rpc ReceiveJobs (ReceiveJobsRequest) returns (ReceiveJobsResponse);
 }
 
 message WatchJobsRequest {
@@ -12,5 +13,13 @@ message WatchJobsRequest {
 }
 
 message WatchJobsResponse {
+
+}
+message ReceiveJobsRequest {
+  string method = 1;
+  string data = 2;
+}
+
+message ReceiveJobsResponse {
 
 }

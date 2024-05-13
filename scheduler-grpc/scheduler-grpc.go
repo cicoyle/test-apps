@@ -39,8 +39,56 @@ func (s *JobService) WatchJobs(ctx context.Context, req *job.WatchJobsRequest) (
 	return &job.WatchJobsResponse{}, nil
 }
 
+func (s *JobService) ReceiveJobs(ctx context.Context, in *job.ReceiveJobsRequest) (*job.ReceiveJobsResponse, error) {
+	if strings.HasPrefix(in.GetMethod(), "job/cass") {
+		log.Printf("Method: %s\n", in.GetMethod())
+		log.Printf("Data: %s\n", in.GetData())
+		var jobData Job
+		//dataBytes := in.GetData()
+		//
+		//if err := json.Unmarshal(dataBytes, &jobData); err != nil {
+		//	return nil, fmt.Errorf("error decoding data: %v", err)
+		//}
+		decodedValue, err := base64.StdEncoding.DecodeString(jobData.Value)
+		if err != nil {
+			return nil, fmt.Errorf("error decoding base64: %v", err)
+		}
+
+		log.Printf("Decoded value: %s", strings.TrimSpace(string(decodedValue)))
+		log.Println()
+	}
+	return nil, nil
+}
+
+func (s *JobService) OnJobEvent(ctx context.Context, in *rtv1.JobEventRequest) (*rtv1.JobEventResponse, error) {
+	log.Printf("CASSIE IN ONJOBEVENT: %+v\n", in)
+
+	log.Printf("Method: %s\n", in.GetMethod())
+	log.Printf("Data: %s\n", in.GetData().String())
+
+	//in.GetName() -> enable users to do switch off job name and/or method
+	if strings.HasPrefix(in.GetMethod(), "job/cass") {
+		log.Printf("Method: %s\n", in.GetMethod())
+		log.Printf("Data: %s\n", in.GetData().String())
+		var jobData Job
+		dataBytes := in.GetData().GetValue()
+
+		if err := json.Unmarshal(dataBytes, &jobData); err != nil {
+			return nil, fmt.Errorf("error decoding data: %v", err)
+		}
+		decodedValue, err := base64.StdEncoding.DecodeString(jobData.Value)
+		if err != nil {
+			return nil, fmt.Errorf("error decoding base64: %v", err)
+		}
+
+		log.Printf("Decoded value: %s", strings.TrimSpace(string(decodedValue)))
+		log.Println()
+	}
+	return nil, nil
+}
+
 func (s *JobService) OnInvoke(ctx context.Context, in *commonv1.InvokeRequest) (*commonv1.InvokeResponse, error) {
-	if strings.HasPrefix(in.GetMethod(), "watchJobs/cass") {
+	if strings.HasPrefix(in.GetMethod(), "job/cass") {
 		log.Printf("Method: %s\n", in.GetMethod())
 		log.Printf("Data: %s\n", in.GetData().String())
 		var jobData Job

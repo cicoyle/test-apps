@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -16,8 +16,7 @@ type Job struct {
 
 func main() {
 	// List
-	http.HandleFunc("/watchJobs/", handleJob)
-
+	http.HandleFunc("/job/", handleJob)
 	// Get
 	http.HandleFunc("/watchJobs/cass1", cass1Job)
 	http.HandleFunc("/watchJobs/sam1", sam1Job)
@@ -27,7 +26,7 @@ func main() {
 }
 
 func sam1Job(w http.ResponseWriter, r *http.Request) {
-	rawBody, err := ioutil.ReadAll(r.Body)
+	rawBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		// TODO
 	}
@@ -35,7 +34,7 @@ func sam1Job(w http.ResponseWriter, r *http.Request) {
 }
 
 func cass1Job(w http.ResponseWriter, r *http.Request) {
-	rawBody, err := ioutil.ReadAll(r.Body)
+	rawBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		// TODO
 	}
@@ -43,7 +42,8 @@ func cass1Job(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleJob(w http.ResponseWriter, r *http.Request) {
-	rawBody, err := ioutil.ReadAll(r.Body)
+	fmt.Println("CASSIE IN HANDLE JOB")
+	rawBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error reading request body: %v", err), http.StatusBadRequest)
 		return

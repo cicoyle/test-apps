@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	JobService_WatchJobs_FullMethodName = "/scheduler_grpc.proto.job.JobService/WatchJobs"
+	JobService_WatchJobs_FullMethodName   = "/scheduler_grpc.proto.job.JobService/WatchJobs"
+	JobService_ReceiveJobs_FullMethodName = "/scheduler_grpc.proto.job.JobService/ReceiveJobs"
 )
 
 // JobServiceClient is the client API for JobService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobServiceClient interface {
 	WatchJobs(ctx context.Context, in *WatchJobsRequest, opts ...grpc.CallOption) (*WatchJobsResponse, error)
+	ReceiveJobs(ctx context.Context, in *ReceiveJobsRequest, opts ...grpc.CallOption) (*ReceiveJobsResponse, error)
 }
 
 type jobServiceClient struct {
@@ -46,11 +48,21 @@ func (c *jobServiceClient) WatchJobs(ctx context.Context, in *WatchJobsRequest, 
 	return out, nil
 }
 
+func (c *jobServiceClient) ReceiveJobs(ctx context.Context, in *ReceiveJobsRequest, opts ...grpc.CallOption) (*ReceiveJobsResponse, error) {
+	out := new(ReceiveJobsResponse)
+	err := c.cc.Invoke(ctx, JobService_ReceiveJobs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JobServiceServer is the server API for JobService service.
 // All implementations must embed UnimplementedJobServiceServer
 // for forward compatibility
 type JobServiceServer interface {
 	WatchJobs(context.Context, *WatchJobsRequest) (*WatchJobsResponse, error)
+	ReceiveJobs(context.Context, *ReceiveJobsRequest) (*ReceiveJobsResponse, error)
 	mustEmbedUnimplementedJobServiceServer()
 }
 
@@ -60,6 +72,9 @@ type UnimplementedJobServiceServer struct {
 
 func (UnimplementedJobServiceServer) WatchJobs(context.Context, *WatchJobsRequest) (*WatchJobsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WatchJobs not implemented")
+}
+func (UnimplementedJobServiceServer) ReceiveJobs(context.Context, *ReceiveJobsRequest) (*ReceiveJobsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReceiveJobs not implemented")
 }
 func (UnimplementedJobServiceServer) mustEmbedUnimplementedJobServiceServer() {}
 
@@ -92,6 +107,24 @@ func _JobService_WatchJobs_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobService_ReceiveJobs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReceiveJobsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobServiceServer).ReceiveJobs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: JobService_ReceiveJobs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobServiceServer).ReceiveJobs(ctx, req.(*ReceiveJobsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JobService_ServiceDesc is the grpc.ServiceDesc for JobService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +135,10 @@ var JobService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WatchJobs",
 			Handler:    _JobService_WatchJobs_Handler,
+		},
+		{
+			MethodName: "ReceiveJobs",
+			Handler:    _JobService_ReceiveJobs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
