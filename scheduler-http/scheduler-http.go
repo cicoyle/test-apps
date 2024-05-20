@@ -18,8 +18,8 @@ func main() {
 	// List
 	http.HandleFunc("/job/", handleJob)
 	// Get
-	http.HandleFunc("/watchJobs/cass1", cass1Job)
-	http.HandleFunc("/watchJobs/sam1", sam1Job)
+	http.HandleFunc("/job/cass1", cass1Job)
+	http.HandleFunc("/job/sam1", sam1Job)
 
 	log.Println("Server started on port 7979")
 	log.Fatal(http.ListenAndServe("127.0.0.1:7979", nil))
