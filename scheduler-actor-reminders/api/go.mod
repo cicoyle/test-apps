@@ -1,6 +1,3 @@
-//module api
-
-//module github.com/cicoyle/test-apps/scheduler-actor-reminders/api
 module test-apps/scheduler-actor-reminders/api
 
 go 1.23.1

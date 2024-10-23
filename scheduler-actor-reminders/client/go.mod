@@ -1,11 +1,7 @@
-//module player-actor-client
-
-//module github.com/cicoyle/test-apps/scheduler-actor-reminders/player-actor-client
 module test-apps/scheduler-actor-reminders/player-actor-client
 
 go 1.23.1
 
-//github.com/cicoyle/test-apps/scheduler-actor-reminders/api v0.0.0-00010101000000-000000000000
 require github.com/dapr/go-sdk v1.11.0
 
 require test-apps/scheduler-actor-reminders/api v0.0.0-00010101000000-000000000000
@@ -25,7 +21,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-//replace github.com/cicoyle/test-apps/scheduler-actor-reminders/api => ../api
 replace test-apps/scheduler-actor-reminders/api => ../api
-
 replace github.com/dapr/go-sdk => /Users/cassie/go/src/github.com/go-sdk

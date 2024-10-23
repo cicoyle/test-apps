@@ -1,6 +1,3 @@
-//module player-actor
-
-//module github.com/cicoyle/test-apps/scheduler-actor-reminders/player-actor
 module test-apps/scheduler-actor-reminders/player-actor
 
 go 1.23.1
