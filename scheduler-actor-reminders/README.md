@@ -39,13 +39,13 @@ Or
 
 Build app images from `scheduler-actor-reminders` directory:
 ```shell
-docker build -t player-actor-server -f Dockerfile-server server
-docker build -t player-actor-client -f Dockerfile-client client
+docker build -t player-actor-server -f Dockerfile-server .
+docker build -t player-actor-client -f Dockerfile-client .
 ```
 
 Run app containers:
 ```shell
 # optionally add -d to both commands to run in background
-docker run --name player-actor-server -p 3083:8383 player-actor-server
+docker run --name player-actor-server -p 8383:8383 player-actor-server
 docker run --name player-actor-client -p 50051:50051 player-actor-client
 ```
