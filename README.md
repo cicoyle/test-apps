@@ -14,14 +14,12 @@ curl -X POST \
   -H "Content-Type: application/json" \
   -H 'dapr-app-id: sub' \
   -d '{
-        "job": {
-            "data": {
-                "@type": "type.googleapis.com/google.type.Expr",
-                "expression": "cass1"
-            },
-            "schedule": "@every 2s",
-            "repeats": 2
-        }
+        "data": {
+            "@type": "type.googleapis.com/google.type.Expr",
+            "expression": "cass1"
+        },
+        "schedule": "@every 2s",
+        "repeats": 2
     }'
 ```
 

@@ -46,7 +46,6 @@ func main() {
 	if err := daprService.GracefulStop(); err != nil {
 		log.Fatalf("error stopping Dapr actor runtime: %v", err)
 	}
-
 }
 
 // waitForShutdown keeps the app alive until an interrupt or termination signal is received

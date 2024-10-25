@@ -25,12 +25,21 @@ type GetPlayerRequest struct {
 	ActorID string
 }
 
+type GetPlayerResponse struct {
+	ActorID string
+	Health  int
+}
+
 // GetUser retrieving the state of the PlayerActor
-func (p *PlayerActor) GetUser(ctx context.Context, player *GetPlayerRequest) (*PlayerActor, error) {
+func (p *PlayerActor) GetUser(ctx context.Context, player *GetPlayerRequest) (*GetPlayerResponse, error) {
 	if player.ActorID == p.ID() {
 		fmt.Printf("Player Actor ID: %s has a health level of: %d\n", p.ID(), p.Health)
+		return &GetPlayerResponse{
+			ActorID: p.ID(),
+			Health:  p.Health,
+		}, nil
 	}
-	return p, nil
+	return nil, nil
 }
 
 // Invoke invokes an action on the actor
@@ -39,14 +48,36 @@ func (p *PlayerActor) Invoke(ctx context.Context, req string) (string, error) {
 	return req, nil
 }
 
+// RevivePlayer revives the actor players health back to 100
+func (p *PlayerActor) RevivePlayer(ctx context.Context, id string) error {
+	if id == p.ID() {
+		fmt.Printf("Reviving player: %s\n", id)
+		p.Health = 100
+	}
+
+	return nil
+}
+
 // ReminderCall executes logic to handle what happens when the reminder is triggered
 // Dapr automatically calls this method when a reminder fires for the player actor
 func (p *PlayerActor) ReminderCall(reminderName string, state []byte, dueTime string, period string) {
 	fmt.Println("receive reminder = ", reminderName, " state = ", string(state), "duetime = ", dueTime, "period = ", period)
 	if reminderName == "healthReminder" {
-		fmt.Println("cassieeeeee")
-		p.Health += 10 // Restore some health
-		fmt.Printf("Player health restored. Current health: %d\n", p.Health)
+		// Increase health if below 100
+		if p.Health < 100 {
+			p.Health += 10
+			if p.Health > 100 {
+				p.Health = 100
+			}
+			fmt.Printf("Player Actor health increased. Current health: %d\n", p.Health)
+		}
+	} else if reminderName == "healthDecayReminder" {
+		// Decrease health
+		p.Health -= 5
+		if p.Health < 0 {
+			fmt.Println("Player Actor died...")
+		}
+		fmt.Printf("Health decreased. Current health: %d\n", p.Health)
 	}
 
 }
@@ -62,21 +93,4 @@ func (p *PlayerActor) StartReminder(ctx context.Context, req *api.ReminderReques
 		Period:    req.Period,
 		Data:      []byte(req.Data),
 	})
-}
-
-// Start initializes the actor and its reminders
-func (p *PlayerActor) Start(ctx context.Context) error {
-	fmt.Println("PlayerActor started.")
-
-	err := p.StartReminder(ctx, &api.ReminderRequest{
-		ReminderName: "healthReminder",
-		Period:       "10s",
-		Duration:     "10s",
-		Data:         `"Reminder triggered"`,
-	})
-	if err != nil {
-		return fmt.Errorf("failed to start reminder: %w", err)
-	}
-
-	return nil
 }
