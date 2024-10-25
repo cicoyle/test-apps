@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-
 	"test-apps/scheduler-actor-reminders/api"
 
 	"github.com/dapr/go-sdk/actor"
