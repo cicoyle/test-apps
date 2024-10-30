@@ -134,7 +134,6 @@ func main() {
 	signal.Notify(signalChan, syscall.SIGINT, syscall.SIGTERM)
 	<-signalChan
 	fmt.Println("Shutting down...")
-
 }
 
 // monitorPlayerHealth continuously checks the player's health every 5 seconds
